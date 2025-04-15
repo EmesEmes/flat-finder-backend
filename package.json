@@ -3,13 +3,18 @@
   "version": "1.0.0",
   "description": "Tecnologías utilizadas - Node.js / Express",
   "main": "app.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --watch --env-file=.env app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^5.1.0"
+    "bcrypt": "^5.1.1",
+    "express": "^5.1.0",
+    "mongoose": "^8.13.2",
+    "uuid": "^11.1.0"
   }
 }
