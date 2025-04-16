@@ -5,7 +5,7 @@ import flatRouter from "./routes/flat.router.js"
 
 const app = express()
 app.use(express.json())
-app.use('/auth', userRouter)
+app.use('/users', userRouter)
 app.use('/flat', flatRouter)
 connectDB()
 
