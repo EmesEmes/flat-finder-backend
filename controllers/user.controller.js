@@ -1,6 +1,6 @@
 import { User } from "../models/user.model.js"
 
-const saveUser = async(req, res) => {
+const saveUser = async (req, res) => {
   try {
     const user = new User(req.body)
     await user.save()
