@@ -1,9 +1,16 @@
 import express from "express"
-import { saveFlat, getAllFlats } from "../controllers/flat.controller.js"
+import {
+    addFlat, getAllFlats, deleteFlat, updateFlat, getFlatById
+} from "../controllers/flat.controller.js"
 
 const router = express.Router()
 
-router.post("/", saveFlat)
+
 router.get("/", getAllFlats)
+router.patch("/:id", updateFlat)
+router.post("/", addFlat)
+router.delete("/:id", deleteFlat)
+router.get("/:id", getFlatById)
+
 
 export default router

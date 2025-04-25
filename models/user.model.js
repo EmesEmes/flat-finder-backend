@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
-import bcryp from "bcrypt";
-import { v4 as uuidv4 } from "uuid";
+import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema({
   firstName: {
@@ -22,6 +21,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Email is required"],
     match: [/^\S+@\S+\.\S+$/, "Por favor ingresa un email válido"],
+    unique: true
   },
   password: {
     type: String,
@@ -73,15 +73,15 @@ const userSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: null,
-  },
+  }
 });
 
 userSchema.pre("save", async function (next) {
   const user = this;
   if (user.isModified("password")) {
     try {
-      const salt = await bcryp.genSalt(10);
-      user.password = await bcryp.hash(user.password, salt);
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(user.password, salt);
       next();
     } catch (error) {
       next(error);
@@ -90,5 +90,11 @@ userSchema.pre("save", async function (next) {
     next();
   }
 });
+
+userSchema.methods.comparePassword = async function (plainPassword) {
+  const validationResult = await bcrypt.compare(plainPassword, this.password);
+  return validationResult;
+};
+
 
 export const User = mongoose.model("users", userSchema);
