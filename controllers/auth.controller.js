@@ -1,5 +1,5 @@
-import { User } from "../models/user.model.js";
-import jwt from "jsonwebtoken";
+import { User } from "../models/user.model.js"
+import jwt from "jsonwebtoken"
 
 const register = async (req, res) => {
     try {
@@ -21,15 +21,15 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email });
+        const { email, password } = req.body
+        const user = await User.findOne({ email })
         if (!user) {
-            return res.status(401).json({ message: "Invalid credentials" });
+            return res.status(401).json({ message: "Invalid credentials" })
         }
 
         const isMatch = await user.comparePassword(password)
         if (!isMatch) {
-            return res.status(401).json({ message: "Invalid credentials" });
+            return res.status(401).json({ message: "Invalid credentials" })
         }
         const token = jwt.sign(
             { userId: user._id, role: user.role },
@@ -37,11 +37,11 @@ const login = async (req, res) => {
             {
                 expiresIn: "1h",
             }
-        );
-        res.json({ token });
+        )
+        res.json({ token })
     } catch (error) {
-        res.status(500).json({ message: "error" });
+        res.status(500).json({ message: "error" })
     }
-};
+}
 
-export { login, register };
+export { login, register }

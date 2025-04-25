@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
-import { User } from "./user.model.js";
-import { Flat } from "./flat.model.js";
+import mongoose from "mongoose"
+import { User } from "./user.model.js"
+import { Flat } from "./flat.model.js"
 
 
 const messageSchema = new mongoose.Schema(

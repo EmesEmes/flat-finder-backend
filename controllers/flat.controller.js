@@ -1,4 +1,4 @@
-import { Flat } from "../models/flat.model.js";
+import { Flat } from "../models/flat.model.js"
 
 const addFlat = async (req, res) => {
     try {

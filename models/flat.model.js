@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { User } from "./user.model.js";
+import mongoose from "mongoose"
+import { User } from "./user.model.js"
 
 
 const flatSchema = new mongoose.Schema(
