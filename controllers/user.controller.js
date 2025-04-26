@@ -5,7 +5,7 @@ const saveUser = async (req, res) => {
     const user = new User(req.body)
     await user.save()
     res.status(201).json({
-      message: "User created succesfully",
+      message: "User created succesfull",
       success: true,
       data: user
     })
