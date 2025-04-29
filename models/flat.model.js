@@ -32,9 +32,21 @@ const flatSchema = new mongoose.Schema(
             type: Number,
             require: true,
         },
+        images: {
+            type: String,
+
+        },
         dateAvailable: {
             type: Date,
             require: true,
+        },
+        latitude: {
+            type: String,
+            required: true,
+        },
+        longitude: {
+            type: String,
+            required: true,
         },
         ownerId: {
             type: mongoose.Schema.Types.ObjectId,
