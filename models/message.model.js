@@ -2,14 +2,8 @@ import mongoose from "mongoose"
 import { User } from "./user.model.js"
 import { Flat } from "./flat.model.js"
 
-
 const messageSchema = new mongoose.Schema(
     {
-        ownerId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: User,
-            require: true,
-        },
         content: {
             type: String,
             require: true,
@@ -27,8 +21,16 @@ const messageSchema = new mongoose.Schema(
         createAt: {
             type: Date,
             default: Date.now,
+        },
+        response: {
+            type: String,
+            default: null
+        },
+        responseDate: {
+            type: Date,
+            default: null
         }
     }
 )
 
-export const Message = new mongoose.model("message", messageSchema)
+export const Message = new mongoose.model("messages", messageSchema)
