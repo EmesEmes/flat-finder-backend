@@ -18,7 +18,9 @@ const addFlat = async (req, res) => {
 }
 const getAllFlats = async (req, res) => {
     try {
-        const flats = await Flat.find()
+        const flats = await Flat.find(
+            { deletedAt: null }
+        )
         res.status(201).json({
             success: true,
             data: flats
@@ -50,7 +52,7 @@ const getFlatById = async (req, res) => {
 
 const deleteFlat = async (req, res) => {
     try {
-        const flat = await Flat.findByIdAndDelete(req.params.id)
+        const flat = await Flat.findByIdAndUpdate(req.params.id, { deletedAt: Date.now() })
         if (!flat) {
             res.status(404).json({
                 message: "Flat not found",

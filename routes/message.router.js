@@ -8,4 +8,3 @@ router.post("/", addMessage)
 router.patch("/:flatId", updateMessage)
 
 export default router
-

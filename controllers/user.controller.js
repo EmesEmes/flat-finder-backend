@@ -20,7 +20,9 @@ const saveUser = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find()
+    const users = await User.find({
+      deletedAt: null
+    })
     res.status(201).json({
       success: true,
       data: users
@@ -52,6 +54,8 @@ const getUserById = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
+    console.log(req)
+    console.log(req.body)
     const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
     res.status(200).json({
       message: "Update done",
@@ -68,7 +72,7 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
-    const user = await User.findByIdAndDelete(req.params.id)
+    const user = await User.findByIdAndUpdate(req.params.id, { deletedAt: Date.now() })
     if (!user) {
       res.status(404).json({
         message: "user not found",
@@ -87,7 +91,6 @@ const deleteUser = async (req, res) => {
   }
 }
 
-
 export {
   saveUser,
   getAllUsers,
@@ -95,4 +98,3 @@ export {
   updateUser,
   deleteUser
 }
-

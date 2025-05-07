@@ -9,24 +9,24 @@ const userSchema = new mongoose.Schema({
   },
   lastName: {
     type: String,
-    required: [true, "Lastname is required"],
-    minlength: [2, "Lastname must have at least two characters"],
+    required: [true, "Lastname is required."],
+    minlength: [2, "Lastname must have at least two characters."],
   },
   phone: {
     type: String,
-    required: [true, "Phone number is required"],
-    minlength: [2, "Phone number must have at least ten numbers"],
+    required: [true, "Phone number is required."],
+    minlength: [2, "Phone number must have at least ten numbers."],
   },
   email: {
     type: String,
-    required: [true, "Email is required"],
-    match: [/^\S+@\S+\.\S+$/, "Por favor ingresa un email válido"],
+    required: [true, "Email is required."],
+    match: [/^\S+@\S+\.\S+$/, "Please enter a valid email address."],
     unique: true
   },
   password: {
     type: String,
     required: true,
-    minlength: [6, "La contraseña debe tener al menos 6 caracteres"],
+    minlength: [6, "The password must be at least 6 characters long."],
     validate: {
       validator: function (v) {
         return /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=<>?{}[\]~])[A-Za-z\d!@#$%^&*()_\-+=<>?{}[\]~]{6,}$/.test(
@@ -51,15 +51,15 @@ const userSchema = new mongoose.Schema({
         }
         return age >= 18 && age <= 120
       },
-      message: "La edad debe estar entre 18 y 120 años",
+      message: "The age must be between 18 and 120 years",
     },
   },
   image: {
-    type: String,
+    type: String
   },
   role: {
     type: String,
-    default: "user",
+    default: "user"
   },
   createAt: {
     type: Date,
@@ -94,6 +94,5 @@ userSchema.methods.comparePassword = async function (plainPassword) {
   const validationResult = await bcrypt.compare(plainPassword, this.password)
   return validationResult
 }
-
 
 export const User = mongoose.model("users", userSchema)
