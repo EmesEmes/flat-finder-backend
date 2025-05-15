@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
   phone: {
     type: String,
     required: [true, "Phone number is required."],
-    minlength: [2, "Phone number must have at least ten numbers."],
+    minlength: [10, "Phone number must have at least ten numbers."],
   },
   email: {
     type: String,
@@ -27,6 +27,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: [6, "The password must be at least 6 characters long."],
+    select: false,
     validate: {
       validator: function (v) {
         return /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=<>?{}[\]~])[A-Za-z\d!@#$%^&*()_\-+=<>?{}[\]~]{6,}$/.test(

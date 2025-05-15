@@ -16,4 +16,6 @@ const favoriteFlatSchema = new mongoose.Schema(
         }
     }
 )
+favoriteFlatSchema.index({ user: 1, flat: 1 }, { unique: true });
+
 export const FavoriteFlat = new mongoose.model("favoriteFlats", favoriteFlatSchema)

@@ -22,7 +22,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -31,14 +31,17 @@ const login = async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials", success: false });
     }
+    const userObj = user.toObject()
+    delete userObj.password
+
     const token = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
       {
-        expiresIn: "1h",
+        expiresIn: "180d",
       }
     );
-    res.json({ token, success: true, message: "Loged In succesfully", user });
+    res.json({ token, success: true, message: "Loged In succesfully", user: userObj });
   } catch (error) {
     res.status(500).json({ message: "error", success: false });
   }

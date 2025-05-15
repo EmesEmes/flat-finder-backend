@@ -1,10 +1,38 @@
-import express from "express"
-import { getAllFavoriteFlat, addFavoriteFlat, deleteFavoriteFlat } from "../controllers/favoriteFlats.controller.js"
+import express from "express";
+import {
+  toggleFavoriteFlat,
+  getAllFavoriteFlats,
+  deleteFavoriteFlat
+} from "../controllers/favoriteFlats.controller.js";
+import authenticationMiddleware from "../middlewares/authentication.middleware.js";
+import { accountOwnerMiddleware } from "../middlewares/authorization.middleware.js";
+import { validateRequest } from "../middlewares/validate.middleware.js";
+import { body } from "express-validator";
 
-const router = express.Router()
+const router = express.Router();
 
-router.get("/:userId", getAllFavoriteFlat)
-router.post("/", addFavoriteFlat)
-router.delete("/:favoriteId", deleteFavoriteFlat)
+router.use(authenticationMiddleware);
 
-export default router
+router.post(
+  "/toggle",
+  [
+    body("userId").isMongoId().withMessage("userId inválido"),
+    body("flatId").isMongoId().withMessage("flatId inválido")
+  ],
+  validateRequest,
+  toggleFavoriteFlat
+);
+
+router.get("/:userId", accountOwnerMiddleware, getAllFavoriteFlats);
+
+router.delete(
+  "/",
+  [
+    body("userId").isMongoId().withMessage("userId inválido"),
+    body("flatId").isMongoId().withMessage("flatId inválido")
+  ],
+  validateRequest,
+  deleteFavoriteFlat
+);
+
+export default router;
