@@ -15,16 +15,23 @@ const authorizationMiddleware = (roles) => (req, res, next) => {
 
 const accountOwnerMiddleware = async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id);
-    if(!user) {
+    const paramUserId = req.params.id || req.params.userId;
+
+    const user = await User.findById(paramUserId);
+    if (!user) {
       return res.status(404).json({
         message: "User not found"
-      })
+      });
     }
-    if (req.params.id != req.user.userId && req.user.role != "admin")
+
+    if (paramUserId != req.user.userId && req.user.role != "admin") {
       return res.status(403).json({ message: "Access denied for User" });
+    }
+
     next();
-  } catch (error) {}
+  } catch (error) {
+    res.status(500).json({ message: "Server error in accountOwnerMiddleware" });
+  }
 };
 
 const flatOwnerMiddleware = async (req, res, next) => {
@@ -38,4 +45,4 @@ const flatOwnerMiddleware = async (req, res, next) => {
   next();
 };
 
-export { authorizationMiddleware, accountOwnerMiddleware, flatOwnerMiddleware }
+export { authorizationMiddleware, accountOwnerMiddleware, flatOwnerMiddleware };

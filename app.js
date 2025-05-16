@@ -1,4 +1,5 @@
 import express from 'express'
+import dotenv from "dotenv"
 import { connectDB } from './db/db.js'
 import userRouter from './routes/user.router.js'
 import flatRouter from "./routes/flat.router.js"
@@ -6,6 +7,8 @@ import authRouter from "./routes/auth.router.js"
 import messageRouter from "./routes/message.router.js"
 import favoriteFlatsRouter from './routes/favoriteFlats.router.js'
 import cors from "cors"
+
+dotenv.config()
 
 const app = express()
 app.use(cors());
@@ -20,4 +23,4 @@ connectDB()
 
 app.listen(8080, () => {
   console.log("server runnint at port 8080")
-})
+}) 

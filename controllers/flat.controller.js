@@ -18,6 +18,7 @@ const addFlat = async (req, res) => {
         })
     }
 }
+
 const getAllFlats = async (req, res) => {
   try {
     const {

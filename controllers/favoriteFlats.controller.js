@@ -1,13 +1,11 @@
 import { FavoriteFlat } from "../models/favoriteflats.model.js";
 import { Flat } from "../models/flat.model.js";
 
-// 🔁 Agrega o elimina un flat de favoritos
+
 const toggleFavoriteFlat = async (req, res) => {
-  const { userId, flatId } = req.body;
-
+  const { user, flatId } = req.body;
   try {
-    const existing = await FavoriteFlat.findOne({ user: userId, flat: flatId });
-
+    const existing = await FavoriteFlat.findOne({ user: user, flatId: flatId });
     if (existing) {
       await FavoriteFlat.findByIdAndDelete(existing._id);
       return res.status(200).json({
@@ -16,7 +14,7 @@ const toggleFavoriteFlat = async (req, res) => {
       });
     }
 
-    const newFavorite = new FavoriteFlat({ user: userId, flat: flatId });
+    const newFavorite = new FavoriteFlat({ user: user, flatId: flatId });
     await newFavorite.save();
 
     res.status(201).json({
@@ -29,10 +27,9 @@ const toggleFavoriteFlat = async (req, res) => {
   }
 };
 
-// 📥 Obtiene todos los flats favoritos del usuario con filtros y paginación
 const getAllFavoriteFlats = async (req, res) => {
   try {
-    const userId = req.params.userId;
+      const user = req.params.userId
     const {
       city,
       hasAC,
@@ -46,8 +43,8 @@ const getAllFavoriteFlats = async (req, res) => {
       limit = 10
     } = req.query;
 
-    const favorites = await FavoriteFlat.find({ user: userId });
-    const flatIds = favorites.map(f => f.flat);
+    const favorites = await FavoriteFlat.find({ user: user });
+    const flatIds = favorites.map(f => new mongoose.Types.ObjectId(f.flat));
 
     if (!flatIds.length) {
       return res.status(200).json({
@@ -64,8 +61,7 @@ const getAllFavoriteFlats = async (req, res) => {
     }
 
     const query = {
-      _id: { $in: flatIds },
-      deletedAt: null
+      _id: { $in: flatIds }
     };
 
     if (city) {
@@ -120,7 +116,6 @@ const getAllFavoriteFlats = async (req, res) => {
   }
 };
 
-// ❌ (opcional) Eliminar favorito manualmente con userId + flatId
 const deleteFavoriteFlat = async (req, res) => {
   try {
     const { userId, flatId } = req.body;

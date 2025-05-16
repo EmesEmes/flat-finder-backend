@@ -16,7 +16,7 @@ router.use(authenticationMiddleware);
 router.post(
   "/toggle",
   [
-    body("userId").isMongoId().withMessage("userId inválido"),
+    body("user").isMongoId().withMessage("userId inválido"),
     body("flatId").isMongoId().withMessage("flatId inválido")
   ],
   validateRequest,

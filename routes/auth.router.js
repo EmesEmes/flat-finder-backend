@@ -2,11 +2,14 @@ import express from "express";
 import { login, register } from "../controllers/auth.controller.js";
 import { validateRequest } from "../middlewares/validate.middleware.js";
 import { body } from "express-validator";
+import upload from "../middlewares/multer.middleware.js";
+import { User } from "../models/user.model.js";
 
 const router = express.Router();
 
 router.post(
   "/register", 
+  upload.single("image"),
   [
     body("firstName")
       .notEmpty().withMessage("Name is required.")
@@ -25,7 +28,7 @@ router.post(
       .custom(async (email) => {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-          throw new Error("Este correo ya está registrado");
+          throw new Error("Email is alredy used.");
         }
       }),
 
