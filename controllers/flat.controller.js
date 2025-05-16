@@ -35,7 +35,7 @@ const getAllFlats = async (req, res) => {
     } = req.query;
 
     const query = {
-      deletedAt: null // ← muy importante para excluir flats eliminados lógicamente
+      deletedAt: null 
     };
 
     if (city) {
@@ -149,8 +149,10 @@ const deleteFlat = async (req, res) => {
   }
 };
 const updateFlat = async (req, res) => {
+    console.log(req.params.flatId)
     try {
-        const flat = await Flat.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+        const flat = await Flat.findByIdAndUpdate(req.params.flatId, req.body, { new: true, runValidators: true })
+        console.log(flat)
         res.status(200).json({
             message: "Update done",
             success: true,
@@ -201,11 +203,27 @@ const restoreFlat = async (req, res) => {
   }
 };
 
+const getMyFlats = async(req, res) => {
+  try {
+    const flats = await Flat.find({ownerId: req.params.userId})
+    res.status(200).json({
+      data: flats
+    }
+    )
+  } catch (error) {
+    res.status(500).json({
+            message: error.message,
+            success: false
+        })
+  }
+}
+
 export {
     addFlat,
     getAllFlats,
     deleteFlat,
     getFlatById,
     updateFlat,
-    restoreFlat
+    restoreFlat,
+    getMyFlats
 }

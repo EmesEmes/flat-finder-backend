@@ -1,4 +1,5 @@
 import { Flat } from "../models/flat.model.js";
+import { Message } from "../models/message.model.js";
 import { User } from "../models/user.model.js";
 
 const authorizationMiddleware = (roles) => (req, res, next) => {
@@ -35,7 +36,7 @@ const accountOwnerMiddleware = async (req, res, next) => {
 };
 
 const flatOwnerMiddleware = async (req, res, next) => {
-  const flat = await Flat.findById(req.params.id);
+  const flat = await Flat.findById(req.params.flatId);
   if (!flat) {
     return res.status(404).json({ message: "Flat not found" });
   }
@@ -45,4 +46,18 @@ const flatOwnerMiddleware = async (req, res, next) => {
   next();
 };
 
-export { authorizationMiddleware, accountOwnerMiddleware, flatOwnerMiddleware };
+const messageOwner = async (req, res, next) => {
+  
+  try {
+    const message = await Message.findById(req.params.messageId).populate("flatId")
+    if(message.flatId.ownerId.toString() !== req.user.userId) {
+      return res.status(401).json({message: "unauthorized"})
+    }
+    
+    next()
+  } catch (error) {
+    console.log(error, "desde messagemiddleware")
+  }
+}
+
+export { authorizationMiddleware, accountOwnerMiddleware, flatOwnerMiddleware, messageOwner };

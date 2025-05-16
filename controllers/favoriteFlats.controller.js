@@ -28,8 +28,19 @@ const toggleFavoriteFlat = async (req, res) => {
 };
 
 const getAllFavoriteFlats = async (req, res) => {
+  // try {
+  //   const user = req.params.userId
+  //   const favorites = await FavoriteFlat.find({ user: user }).populate("flatId")
+  //   res.status(200).json({
+  //     success: true,
+  //     data: favorites
+  //   })
+  // } catch (error) {
+  //   res.status(500).json({ success: false, message: error.message })
+  // }
   try {
-      const user = req.params.userId
+    const user = req.params.userId;
+
     const {
       city,
       hasAC,
@@ -43,72 +54,71 @@ const getAllFavoriteFlats = async (req, res) => {
       limit = 10
     } = req.query;
 
-    const favorites = await FavoriteFlat.find({ user: user });
-    const flatIds = favorites.map(f => new mongoose.Types.ObjectId(f.flat));
-
-    if (!flatIds.length) {
-      return res.status(200).json({
-        success: true,
-        message: "No hay flats favoritos",
-        data: [],
-        pagination: {
-          total: 0,
-          page: 1,
-          totalPages: 0,
-          hasMore: false
-        }
-      });
-    }
-
-    const query = {
-      _id: { $in: flatIds }
-    };
-
-    if (city) {
-      query.city = { $regex: city, $options: "i" };
-    }
-
-    if (hasAC !== undefined) {
-      query.hasAC = hasAC === "true";
-    }
-
-    if (minPrice || maxPrice) {
-      query.rentPrice = {};
-      if (minPrice) query.rentPrice.$gte = Number(minPrice);
-      if (maxPrice) query.rentPrice.$lte = Number(maxPrice);
-    }
-
-    if (minArea || maxArea) {
-      query.areaSize = {};
-      if (minArea) query.areaSize.$gte = Number(minArea);
-      if (maxArea) query.areaSize.$lte = Number(maxArea);
-    }
-
     const allowedSortFields = ["rentPrice", "createdAt", "areaSize", "yearBuilt"];
     if (!allowedSortFields.includes(sortBy)) {
       return res.status(400).json({ message: "Campo de ordenamiento no válido" });
     }
 
+    // 1. Buscar favoritos con flat poblado y su dueño también
+    const favorites = await FavoriteFlat
+      .find({ user })
+      .populate({
+        path: "flatId",
+        match: { deletedAt: null }, // excluir flats eliminados lógicamente
+        populate: {
+          path: "ownerId",
+          model: "users"
+        }
+      });
+
+    // 2. Extraer los flats existentes
+    let flats = favorites
+      .map(f => f.flatId)
+      .filter(flat => flat); // descarta nulls si el match falló
+
+    // 3. Filtros
+    if (city) {
+      flats = flats.filter(flat => flat.city.toLowerCase().includes(city.toLowerCase()));
+    }
+    if (hasAC !== undefined) {
+      const hasACBool = hasAC === "true";
+      flats = flats.filter(flat => flat.hasAC === hasACBool);
+    }
+    if (minPrice || maxPrice) {
+      flats = flats.filter(flat => {
+        return (!minPrice || flat.rentPrice >= Number(minPrice)) &&
+               (!maxPrice || flat.rentPrice <= Number(maxPrice));
+      });
+    }
+    if (minArea || maxArea) {
+      flats = flats.filter(flat => {
+        return (!minArea || flat.areaSize >= Number(minArea)) &&
+               (!maxArea || flat.areaSize <= Number(maxArea));
+      });
+    }
+
+    // 4. Ordenamiento
+    flats.sort((a, b) => {
+      const direction = order === "asc" ? 1 : -1;
+      return (a[sortBy] - b[sortBy]) * direction;
+    });
+
+    // 5. Paginación
     const pageNumber = Number(page);
     const pageLimit = Number(limit);
-    const skip = (pageNumber - 1) * pageLimit;
+    const start = (pageNumber - 1) * pageLimit;
+    const paginated = flats.slice(start, start + pageLimit);
 
-    const flats = await Flat.find(query)
-      .sort({ [sortBy]: order === "asc" ? 1 : -1 })
-      .skip(skip)
-      .limit(pageLimit);
-
-    const total = await Flat.countDocuments(query);
-
+    // 6. Respuesta
     res.status(200).json({
       success: true,
       message: "Flats favoritos encontrados",
-      data: flats,
+      data: paginated,
       pagination: {
-        total,
+        total: flats.length,
         page: pageNumber,
-        totalPages: Math.ceil(total / pageLimit),
-        hasMore: pageNumber * pageLimit < total
+        totalPages: Math.ceil(flats.length / pageLimit),
+        hasMore: start + pageLimit < flats.length
       }
     });
   } catch (error) {

@@ -5,9 +5,10 @@ import {
   deleteFlat,
   updateFlat,
   getFlatById,
-  restoreFlat
+  restoreFlat,
+  getMyFlats
 } from "../controllers/flat.controller.js";
-import { flatOwnerMiddleware } from "../middlewares/authorization.middleware.js";
+import { accountOwnerMiddleware, flatOwnerMiddleware } from "../middlewares/authorization.middleware.js";
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 import { validateRequest } from "../middlewares/validate.middleware.js";
 import { body } from "express-validator";
@@ -44,7 +45,7 @@ router.post(
 
 
 router.patch(
-  "/:id",
+  "/:flatId",
   flatOwnerMiddleware,
   [
     body("city").optional().isString(),
@@ -62,8 +63,8 @@ router.patch(
   validateRequest,
   updateFlat
 );
-
+router.get("/my-flats/:userId",accountOwnerMiddleware, getMyFlats)
 router.delete("/:id", flatOwnerMiddleware, deleteFlat);
-router.patch("/restore/:id", authenticationMiddleware, flatOwnerMiddleware, restoreFlat);
+router.patch("/restore/:id", flatOwnerMiddleware, restoreFlat);
 
 export default router;

@@ -2,8 +2,12 @@ import express from "express";
 import { body, param } from "express-validator";
 import { getAllMessage, addMessage, updateMessage } from "../controllers/message.controller.js";
 import { validateRequest } from "../middlewares/validate.middleware.js";
+import { authorizationMiddleware, flatOwnerMiddleware, messageOwner } from "../middlewares/authorization.middleware.js";
+import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 
 const router = express.Router();
+
+router.use(authenticationMiddleware)
 
 router.get(
   "/:flatId",
@@ -32,14 +36,14 @@ router.post(
 );
 
 router.patch(
-  "/:flatId",
+  "/:messageId",
   [
-    param("flatId").isMongoId().withMessage("flatId inválido"),
     body("response")
       .notEmpty().withMessage("La respuesta no puede estar vacía")
       .isString().withMessage("La respuesta debe ser texto")
   ],
   validateRequest,
+  messageOwner,
   updateMessage
 );
 
