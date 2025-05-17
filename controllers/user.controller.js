@@ -58,36 +58,48 @@ const getUserById = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const allowedFields = ["firstName", "lastName", "phone", "birthdate", "image"]
-    const updates = {}
+    const allowedFields = ["firstName", "lastName", "phone", "birthdate", "image"];
+    const updates = {};
+
+    const invalidFields = Object.keys(req.body).filter(
+      (field) => !allowedFields.includes(field)
+    );
+
+    if (invalidFields.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: `invalid fields: ${invalidFields.join(", ")}`,
+      });
+    }
 
     allowedFields.forEach((field) => {
       if (req.body[field] !== undefined) {
-        updates[field] = req.body[field]
+        updates[field] = req.body[field];
       }
-    })
+    });
 
     const user = await User.findByIdAndUpdate(req.params.id, updates, {
       new: true,
       runValidators: true,
-    })
+    });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found", success: false })
+      return res.status(404).json({ message: "User not found", success: false });
     }
 
     res.status(200).json({
-      message: "User updated succesfully",
+      message: "User updated successfully",
       success: true,
       data: user,
-    })
+    });
   } catch (error) {
     res.status(500).json({
       message: error.message,
       success: false,
-    })
+    });
   }
-}
+};
+
 
 const deleteUser = async (req, res) => {
   const userId = req.params.id;
