@@ -61,7 +61,7 @@ const getAllFlats = async (req, res) => {
     // Validación de campos de ordenamiento (opcional pero recomendado)
     const allowedSortFields = ["rentPrice", "createdAt", "areaSize", "yearBuilt"];
     if (!allowedSortFields.includes(sortBy)) {
-      return res.status(400).json({ message: "Campo de ordenamiento no válido" });
+      return res.status(400).json({ message: "invalid field" });
     }
 
     const pageNumber = Number(page);
@@ -123,7 +123,7 @@ const deleteFlat = async (req, res) => {
     if (!flat || flat.deletedAt) {
       return res.status(404).json({
         success: false,
-        message: "Flat no encontrado o ya eliminado"
+        message: "Flat not found, or alredy deleted"
       });
     }
 
@@ -139,7 +139,7 @@ const deleteFlat = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Flat eliminado lógicamente, mensajes y favoritos eliminados"
+      message: "Flat deleted logically"
     });
   } catch (error) {
     res.status(500).json({
@@ -175,14 +175,14 @@ const restoreFlat = async (req, res) => {
     if (!flat) {
       return res.status(404).json({
         success: false,
-        message: "Flat no encontrado"
+        message: "Flat not found"
       });
     }
 
     if (flat.deletedAt === null) {
       return res.status(400).json({
         success: false,
-        message: "El flat ya está activo"
+        message: "Flat is alredy active"
       });
     }
 
@@ -191,7 +191,7 @@ const restoreFlat = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Flat restaurado correctamente",
+      message: "Flat restored succesfully",
       data: flat
     });
 

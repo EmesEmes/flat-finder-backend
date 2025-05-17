@@ -16,8 +16,8 @@ router.use(authenticationMiddleware);
 router.post(
   "/toggle",
   [
-    body("user").isMongoId().withMessage("userId inválido"),
-    body("flatId").isMongoId().withMessage("flatId inválido")
+    body("user").isMongoId().withMessage("invalid userId"),
+    body("flatId").isMongoId().withMessage("Invalid flatId")
   ],
   validateRequest,
   toggleFavoriteFlat
@@ -28,8 +28,8 @@ router.get("/:userId", accountOwnerMiddleware, getAllFavoriteFlats);
 router.delete(
   "/",
   [
-    body("userId").isMongoId().withMessage("userId inválido"),
-    body("flatId").isMongoId().withMessage("flatId inválido")
+    body("userId").isMongoId().withMessage("invalid userId"),
+    body("flatId").isMongoId().withMessage("Invalid flatId")
   ],
   validateRequest,
   deleteFavoriteFlat

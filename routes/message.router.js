@@ -20,16 +20,16 @@ router.post(
   "/",
   [
     body("content")
-      .notEmpty().withMessage("El contenido del mensaje es obligatorio")
-      .isString().withMessage("El contenido debe ser un texto"),
+      .notEmpty().withMessage("Content is required")
+      .isString().withMessage("Content must be text"),
 
     body("flatId")
-      .notEmpty().withMessage("flatId es obligatorio")
-      .isMongoId().withMessage("flatId inválido"),
+      .notEmpty().withMessage("flatId is required")
+      .isMongoId().withMessage("invalid flatId"),
 
     body("senderId")
-      .notEmpty().withMessage("senderId es obligatorio")
-      .isMongoId().withMessage("senderId inválido")
+      .notEmpty().withMessage("senderId is required")
+      .isMongoId().withMessage("invalid senderId")
   ],
   validateRequest,
   addMessage
@@ -39,8 +39,8 @@ router.patch(
   "/:messageId",
   [
     body("response")
-      .notEmpty().withMessage("La respuesta no puede estar vacía")
-      .isString().withMessage("La respuesta debe ser texto")
+      .notEmpty().withMessage("Response is required")
+      .isString().withMessage("Response must be text")
   ],
   validateRequest,
   messageOwner,

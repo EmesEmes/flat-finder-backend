@@ -36,7 +36,9 @@ const accountOwnerMiddleware = async (req, res, next) => {
 };
 
 const flatOwnerMiddleware = async (req, res, next) => {
-  const flat = await Flat.findById(req.params.flatId);
+
+  const flat = await Flat.findById(req.params.id);
+  console.log(flat)
   if (!flat) {
     return res.status(404).json({ message: "Flat not found" });
   }
@@ -56,7 +58,7 @@ const messageOwner = async (req, res, next) => {
     
     next()
   } catch (error) {
-    console.log(error, "desde messagemiddleware")
+    console.log(error)
   }
 }
 

@@ -56,27 +56,27 @@ const getAllFavoriteFlats = async (req, res) => {
 
     const allowedSortFields = ["rentPrice", "createdAt", "areaSize", "yearBuilt"];
     if (!allowedSortFields.includes(sortBy)) {
-      return res.status(400).json({ message: "Campo de ordenamiento no válido" });
+      return res.status(400).json({ message: "unvalid field" });
     }
 
-    // 1. Buscar favoritos con flat poblado y su dueño también
+    
     const favorites = await FavoriteFlat
       .find({ user })
       .populate({
         path: "flatId",
-        match: { deletedAt: null }, // excluir flats eliminados lógicamente
+        match: { deletedAt: null }, 
         populate: {
           path: "ownerId",
           model: "users"
         }
       });
 
-    // 2. Extraer los flats existentes
+    
     let flats = favorites
       .map(f => f.flatId)
-      .filter(flat => flat); // descarta nulls si el match falló
+      .filter(flat => flat); 
 
-    // 3. Filtros
+    
     if (city) {
       flats = flats.filter(flat => flat.city.toLowerCase().includes(city.toLowerCase()));
     }
@@ -97,19 +97,19 @@ const getAllFavoriteFlats = async (req, res) => {
       });
     }
 
-    // 4. Ordenamiento
+    
     flats.sort((a, b) => {
       const direction = order === "asc" ? 1 : -1;
       return (a[sortBy] - b[sortBy]) * direction;
     });
 
-    // 5. Paginación
+    
     const pageNumber = Number(page);
     const pageLimit = Number(limit);
     const start = (pageNumber - 1) * pageLimit;
     const paginated = flats.slice(start, start + pageLimit);
 
-    // 6. Respuesta
+    
     res.status(200).json({
       success: true,
       message: "Flats favoritos encontrados",

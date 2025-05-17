@@ -21,7 +21,8 @@ const saveUser = async (req, res) => {
   }
 }
 
-const getAllUsers = async (req, res) => {
+const 
+getAllUsers = async (req, res) => {
   try {
     const users = await User.find({
       deletedAt: null
@@ -72,11 +73,11 @@ const updateUser = async (req, res) => {
     })
 
     if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado", success: false })
+      return res.status(404).json({ message: "User not found", success: false })
     }
 
     res.status(200).json({
-      message: "Usuario actualizado correctamente",
+      message: "User updated succesfully",
       success: true,
       data: user,
     })
@@ -99,7 +100,7 @@ const deleteUser = async (req, res) => {
     );
 
     if (!user) {
-      return res.status(404).json({ success: false, message: "Usuario no encontrado" });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
     const flats = await Flat.find({ ownerId: userId, deletedAt: null });
@@ -117,7 +118,7 @@ const deleteUser = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Usuario eliminado lógicamente y datos relacionados borrados"
+      message: "User deleted logically"
     });
 
   } catch (error) {
@@ -131,18 +132,18 @@ const updatePassword = async (req, res) => {
     const user = await User.findById(req.params.id).select("+password");
 
     if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado", success: false });
+      return res.status(404).json({ message: "User not found", success: false });
     }
 
     const isMatch = await user.comparePassword(currentPassword);
     if (!isMatch) {
-      return res.status(401).json({ message: "Contraseña actual incorrecta", success: false });
+      return res.status(401).json({ message: "Current password incorrect", success: false });
     }
 
     user.password = newPassword;
     await user.save();
 
-    res.status(200).json({ message: "Contraseña actualizada con éxito", success: true });
+    res.status(200).json({ message: "Password updated succesfully", success: true });
   } catch (error) {
     res.status(500).json({ message: error.message, success: false });
   }
@@ -157,7 +158,7 @@ const restoreUser = async (req, res) => {
     if (!user || user.deletedAt === null) {
       return res.status(404).json({
         success: false,
-        message: "Usuario no encontrado o ya está activo"
+        message: "User not found or alredy active"
       });
     }
 
@@ -173,7 +174,7 @@ const restoreUser = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: `Usuario y ${restoredFlats.modifiedCount} flat(s) restaurados correctamente`,
+      message: `User and ${restoredFlats.modifiedCount} flat(s) restores succesfully`,
       data: user
     });
   } catch (error) {

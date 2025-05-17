@@ -41,17 +41,17 @@ router.patch(
   [
     body("currentPassword")
       .notEmpty()
-      .withMessage("Debes ingresar tu contraseña actual"),
+      .withMessage("You must type your current password"),
     body("newPassword")
       .isLength({ min: 6 })
-      .withMessage("La nueva contraseña debe tener al menos 6 caracteres")
+      .withMessage("New password must have at least six character")
       .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=<>?{}[\]~])/)
       .withMessage(
-        "La nueva contraseña debe tener una letra, un número y un carácter especial"
+        "Password must contain at least one character, number and special character"
       ),
     body("confirmPassword").custom((value, { req }) => {
       if (value !== req.body.newPassword) {
-        throw new Error("Las contraseñas no coinciden");
+        throw new Error("Password don't match");
       }
       return true;
     }),

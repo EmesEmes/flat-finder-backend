@@ -25,19 +25,19 @@ router.use(authenticationMiddleware);
 router.post(
   "/",
   [
-    body("city").notEmpty().withMessage("La ciudad es obligatoria"),
-    body("streetName").notEmpty().withMessage("La calle es obligatoria"),
-    body("streetNumber").isNumeric().withMessage("Debe ser número"),
-    body("areaSize").isNumeric().withMessage("Área debe ser número"),
+    body("city").notEmpty().withMessage("City is required"),
+    body("streetName").notEmpty().withMessage("Street name is required"),
+    body("streetNumber").isNumeric().withMessage("Street number must be a valid numbers"),
+    body("areaSize").isNumeric().withMessage("Area size must be a valid number"),
     body("yearBuilt")
       .isInt({ min: 1800, max: new Date().getFullYear() })
-      .withMessage("Año inválido"),
-    body("hasAC").isBoolean().withMessage("Debe ser true o false"),
-    body("rentPrice").isNumeric().withMessage("Debe ser número"),
-    body("dateAvailable").isISO8601().toDate().withMessage("Fecha inválida"),
-    body("latitude").notEmpty().withMessage("Latitud inválida"),
-    body("longitude").notEmpty().withMessage("Longitud inválida"),
-    body("ownerId").isMongoId().withMessage("ID de dueño inválido")
+      .withMessage("invalid year"),
+    body("hasAC").isBoolean().withMessage("AC is required"),
+    body("rentPrice").isNumeric().withMessage("rent price must be a valid number"),
+    body("dateAvailable").isISO8601().toDate().withMessage("Invalid Date"),
+    body("latitude").notEmpty().withMessage("latitude is required"),
+    body("longitude").notEmpty().withMessage("Longitude is required"),
+    body("ownerId").isMongoId().withMessage("Invalid owner Id")
   ],
   validateRequest,
   addFlat
