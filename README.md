@@ -1,8 +1,11 @@
 Tecnologías utilizadas
 - Node.js / Express
+- MongoDB 
 - bcrypt
+- Cloudinary
+- Multer
+- Express-validator
 
 
-borrado logico en casacada
-filtros paginacion orden
-validaciones flat
+
+

@@ -58,7 +58,6 @@ const getAllFlats = async (req, res) => {
       if (maxArea) query.areaSize.$lte = Number(maxArea);
     }
 
-    // Validación de campos de ordenamiento (opcional pero recomendado)
     const allowedSortFields = ["rentPrice", "createdAt", "areaSize", "yearBuilt"];
     if (!allowedSortFields.includes(sortBy)) {
       return res.status(400).json({ message: "invalid field" });
