@@ -4,6 +4,7 @@ import { validateRequest } from "../middlewares/validate.middleware.js";
 import { body } from "express-validator";
 import upload from "../middlewares/multer.middleware.js";
 import { User } from "../models/user.model.js";
+import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 
 const router = express.Router();
 
@@ -75,5 +76,12 @@ router.post(
   ],
   validateRequest,
   login);
+
+  router.get("/me", authenticationMiddleware, (req, res) => {
+  res.json({
+    success: true,
+    user: req.user,
+  });
+});
 
 export default router;
