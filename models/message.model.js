@@ -18,6 +18,10 @@ const messageSchema = new mongoose.Schema(
             ref: User,
             require: true,
         },
+        username: {
+            type: String,
+            required: true
+        },
         createAt: {
             type: Date,
             default: Date.now,

@@ -16,8 +16,7 @@ const authorizationMiddleware = (roles) => (req, res, next) => {
 
 const accountOwnerMiddleware = async (req, res, next) => {
   try {
-    const paramUserId = req.params.id || req.params.userId;
-
+    const paramUserId = req.params.id || req.params.userId;;
     const user = await User.findById(paramUserId);
     if (!user) {
       return res.status(404).json({
@@ -25,7 +24,7 @@ const accountOwnerMiddleware = async (req, res, next) => {
       });
     }
 
-    if (paramUserId != req.user.userId && req.user.role != "admin") {
+    if (paramUserId != req.user._id && req.user.role != "admin") {
       return res.status(403).json({ message: "Access denied for User" });
     }
 

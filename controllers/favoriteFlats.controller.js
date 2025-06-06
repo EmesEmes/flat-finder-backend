@@ -28,16 +28,7 @@ const toggleFavoriteFlat = async (req, res) => {
 };
 
 const getAllFavoriteFlats = async (req, res) => {
-  // try {
-  //   const user = req.params.userId
-  //   const favorites = await FavoriteFlat.find({ user: user }).populate("flatId")
-  //   res.status(200).json({
-  //     success: true,
-  //     data: favorites
-  //   })
-  // } catch (error) {
-  //   res.status(500).json({ success: false, message: error.message })
-  // }
+
   try {
     const user = req.params.userId;
 

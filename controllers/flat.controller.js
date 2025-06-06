@@ -1,23 +1,59 @@
 import { FavoriteFlat } from "../models/favoriteflats.model.js"
 import { Flat } from "../models/flat.model.js"
 import { Message } from "../models/message.model.js"
+import cloudinary from "../config/cloudinary.js"
+
+const uploadToCloudinary = (fileBuffer, mimetype) => {
+  return new Promise((resolve, reject) => {
+    const base64 = fileBuffer.toString("base64");
+    const dataURI = `data:${mimetype};base64,${base64}`;
+
+    cloudinary.uploader.upload(
+      dataURI,
+      { folder: "k_home/flats" },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result.secure_url);
+      }
+    )
+  })
+}
 
 const addFlat = async (req, res) => {
-    try {
-        const flat = new Flat(req.body)
-        await flat.save()
-        res.status(201).json({
-            message: "Flat created successfully",
-            success: true,
-            data: flat
-        })
-    } catch (error) {
-        res.status(500).json({
-            message: error.message,
-            success: false
-        })
+  try {
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({
+        message: "At least one image is required",
+        success: false,
+      });
     }
-}
+
+    const uploadPromises = req.files.map((file) =>
+      uploadToCloudinary(file.buffer, file.mimetype)
+    );
+    const uploadedUrls = await Promise.all(uploadPromises);
+
+    const flatData = {
+      ...req.body,
+      images: uploadedUrls,
+    };
+
+    const flat = new Flat(flatData);
+    await flat.save();
+
+    return res.status(201).json({
+      message: "Flat created successfully",
+      success: true,
+      data: flat,
+    });
+  } catch (error) {
+    console.error("Error en addFlat:", error);
+    return res.status(500).json({
+      message: error.message,
+      success: false,
+    });
+  }
+};
 
 const getAllFlats = async (req, res) => {
   try {

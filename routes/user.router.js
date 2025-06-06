@@ -16,22 +16,23 @@ import { validateRequest } from "../middlewares/validate.middleware.js";
 import { body } from "express-validator";
 
 const router = express.Router();
+router.get(
+  "/:id",
+  // accountOwnerMiddleware,
+  // [
+  //   body("firstName").optional().isLength({ min: 2 }),
+  //   body("lastName").optional().isLength({ min: 2 }),
+  //   body("phone").optional().isLength({ min: 10 }),
+  //   body("birthdate").optional().isISO8601().toDate(),
+  // ],
+  // validateRequest,
+  getUserById
+);
 
 router.use(authenticationMiddleware);
 
 router.get("/", authorizationMiddleware("admin"), getAllUsers);
-router.get(
-  "/:id",
-  accountOwnerMiddleware,
-  [
-    body("firstName").optional().isLength({ min: 2 }),
-    body("lastName").optional().isLength({ min: 2 }),
-    body("phone").optional().isLength({ min: 10 }),
-    body("birthdate").optional().isISO8601().toDate(),
-  ],
-  validateRequest,
-  getUserById
-);
+
 router.patch("/:id", accountOwnerMiddleware, updateUser);
 router.delete("/:id", accountOwnerMiddleware, deleteUser);
 

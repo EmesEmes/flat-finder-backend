@@ -21,6 +21,7 @@ const addMessage = async (req, res) => {
     const message = new Message(req.body);
     await message.save();
     res.status(201).json({
+      data: message,
       success: true,
       message: "New Message created",
     });

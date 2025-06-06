@@ -7,7 +7,7 @@ import authenticationMiddleware from "../middlewares/authentication.middleware.j
 
 const router = express.Router();
 
-router.use(authenticationMiddleware)
+// router.use(authenticationMiddleware)
 
 router.get(
   "/:flatId",

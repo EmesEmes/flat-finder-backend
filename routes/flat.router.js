@@ -12,6 +12,7 @@ import { accountOwnerMiddleware, flatOwnerMiddleware } from "../middlewares/auth
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 import { validateRequest } from "../middlewares/validate.middleware.js";
 import { body } from "express-validator";
+import upload from "../middlewares/multer.middleware.js"
 
 const router = express.Router();
 
@@ -24,6 +25,7 @@ router.use(authenticationMiddleware);
 
 router.post(
   "/",
+  upload.array("images", 5),
   [
     body("city").notEmpty().withMessage("City is required"),
     body("streetName").notEmpty().withMessage("Street name is required"),

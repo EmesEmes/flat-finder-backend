@@ -30,9 +30,11 @@ const flatSchema = new mongoose.Schema({
     type: Number,
     require: true,
   },
-  images: {
-    type: String,
-  },
+  images: [
+    {
+      type: String,
+    },
+  ],
   dateAvailable: {
     type: Date,
     require: true,
