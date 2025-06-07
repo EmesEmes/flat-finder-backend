@@ -51,7 +51,9 @@ const messageOwner = async (req, res, next) => {
   
   try {
     const message = await Message.findById(req.params.messageId).populate("flatId")
-    if(message.flatId.ownerId.toString() !== req.user.userId) {
+    console.log(message.flatId.ownerId)
+    console.log(req.user._id)
+    if(message.flatId.ownerId.toString() !== req.user._id.toString()) {
       return res.status(401).json({message: "unauthorized"})
     }
     

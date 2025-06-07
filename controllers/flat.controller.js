@@ -1,7 +1,7 @@
-import { FavoriteFlat } from "../models/favoriteflats.model.js"
-import { Flat } from "../models/flat.model.js"
-import { Message } from "../models/message.model.js"
-import cloudinary from "../config/cloudinary.js"
+import { FavoriteFlat } from "../models/favoriteflats.model.js";
+import { Flat } from "../models/flat.model.js";
+import { Message } from "../models/message.model.js";
+import cloudinary from "../config/cloudinary.js";
 
 const uploadToCloudinary = (fileBuffer, mimetype) => {
   return new Promise((resolve, reject) => {
@@ -15,9 +15,9 @@ const uploadToCloudinary = (fileBuffer, mimetype) => {
         if (error) return reject(error);
         resolve(result.secure_url);
       }
-    )
-  })
-}
+    );
+  });
+};
 
 const addFlat = async (req, res) => {
   try {
@@ -67,11 +67,11 @@ const getAllFlats = async (req, res) => {
       sortBy = "createdAt",
       order = "desc",
       page = 1,
-      limit = 10
+      limit = 10,
     } = req.query;
 
     const query = {
-      deletedAt: null 
+      deletedAt: null,
     };
 
     if (city) {
@@ -94,7 +94,12 @@ const getAllFlats = async (req, res) => {
       if (maxArea) query.areaSize.$lte = Number(maxArea);
     }
 
-    const allowedSortFields = ["rentPrice", "createdAt", "areaSize", "yearBuilt"];
+    const allowedSortFields = [
+      "rentPrice",
+      "createdAt",
+      "areaSize",
+      "yearBuilt",
+    ];
     if (!allowedSortFields.includes(sortBy)) {
       return res.status(400).json({ message: "invalid field" });
     }
@@ -118,37 +123,36 @@ const getAllFlats = async (req, res) => {
         page: pageNumber,
         limit: pageLimit,
         totalPages: Math.ceil(total / pageLimit),
-        hasMore: pageNumber * pageLimit < total
-      }
+        hasMore: pageNumber * pageLimit < total,
+      },
     });
-
   } catch (error) {
     res.status(500).json({
       message: error.message,
-      success: false
+      success: false,
     });
   }
 };
 
 const getFlatById = async (req, res) => {
-    try {
-        const flat = await Flat.findById(req.params.id)
-        if (!flat) {
-            return res.status(404).send({
-                message: "Flat not found"
-            })
-        }
-        res.status(200).json({
-            success: true,
-            data: flat
-        })
-    } catch (error) {
-        res.status(500).json({
-            message: error.message,
-            success: false
-        })
+  try {
+    const flat = await Flat.findById(req.params.id);
+    if (!flat) {
+      return res.status(404).send({
+        message: "Flat not found",
+      });
     }
-}
+    res.status(200).json({
+      success: true,
+      data: flat,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+      success: false,
+    });
+  }
+};
 
 const deleteFlat = async (req, res) => {
   const flatId = req.params.id;
@@ -158,7 +162,7 @@ const deleteFlat = async (req, res) => {
     if (!flat || flat.deletedAt) {
       return res.status(404).json({
         success: false,
-        message: "Flat not found, or alredy deleted"
+        message: "Flat not found, or alredy deleted",
       });
     }
 
@@ -174,32 +178,35 @@ const deleteFlat = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Flat deleted logically"
+      message: "Flat deleted logically",
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 };
 const updateFlat = async (req, res) => {
-    console.log(req.params.flatId)
-    try {
-        const flat = await Flat.findByIdAndUpdate(req.params.flatId, req.body, { new: true, runValidators: true })
-        console.log(flat)
-        res.status(200).json({
-            message: "Update done",
-            success: true,
-            data: flat
-        })
-    } catch (error) {
-        res.status(500).json({
-            message: error.message,
-            success: false
-        })
-    }
-}
+  console.log(req.params.flatId);
+  try {
+    const flat = await Flat.findByIdAndUpdate(req.params.flatId, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    console.log(flat);
+    res.status(200).json({
+      message: "Update done",
+      success: true,
+      data: flat,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+      success: false,
+    });
+  }
+};
 
 const restoreFlat = async (req, res) => {
   try {
@@ -210,14 +217,14 @@ const restoreFlat = async (req, res) => {
     if (!flat) {
       return res.status(404).json({
         success: false,
-        message: "Flat not found"
+        message: "Flat not found",
       });
     }
 
     if (flat.deletedAt === null) {
       return res.status(400).json({
         success: false,
-        message: "Flat is alredy active"
+        message: "Flat is alredy active",
       });
     }
 
@@ -227,38 +234,37 @@ const restoreFlat = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Flat restored succesfully",
-      data: flat
+      data: flat,
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 };
 
-const getMyFlats = async(req, res) => {
+const getMyFlats = async (req, res) => {
   try {
-    const flats = await Flat.find({ownerId: req.params.userId})
+    const flats = await Flat.find({ ownerId: req.params.userId });
     res.status(200).json({
-      data: flats
-    }
-    )
+      data: flats,
+      success: true,
+    });
   } catch (error) {
     res.status(500).json({
-            message: error.message,
-            success: false
-        })
+      message: error.message,
+      success: false,
+    });
   }
-}
+};
 
 export {
-    addFlat,
-    getAllFlats,
-    deleteFlat,
-    getFlatById,
-    updateFlat,
-    restoreFlat,
-    getMyFlats
-}
+  addFlat,
+  getAllFlats,
+  deleteFlat,
+  getFlatById,
+  updateFlat,
+  restoreFlat,
+  getMyFlats,
+};

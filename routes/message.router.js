@@ -43,6 +43,7 @@ router.patch(
       .isString().withMessage("Response must be text")
   ],
   validateRequest,
+  authenticationMiddleware,
   messageOwner,
   updateMessage
 );
